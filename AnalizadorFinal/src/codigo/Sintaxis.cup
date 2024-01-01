@@ -1,0 +1,295 @@
+package codigo;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+terminal Linea, Numeral, Include, Define, Iostream, Break, Case, Char, Const, Continue, Default, Do, Double, Float, For, 
+    If, Else, Int, Long, Register, Return, Short, Byte, Bool, Unsigned, Struct, Switch, Typedef, Void, While, Cadena, 
+    Comillas, Igual, Suma, Resta, Multiplicacion, Division, Modulo, Conjuncion, Disyuncion, Negacion, MayorQue, 
+    MenorQue, EsIgual, Diferente, MayorIgual, MenorIgual, ConjuncionBit, DisyuncionBit, DesplazamientoI, DesplazamientoD,
+    AsignacionSuma, AsignacionResta, AsignacionMultiplicacion, AsignacionDivision, AsignacionModulo, Incremento, Decremento, 
+    True, False, Parent_a, Parent_c, Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Punto, DosPuntos, Coma, PrintF, ScanF, 
+    Cin, Cout, Using, Namespace, Std, Endl, Identificador, Numero, ERROR;
+
+non terminal INICIO, SENTENCIA, DECLARACION, IF, FOR,
+    SENTENCIA_BOOLEANA_COMPUESTA, SENTENCIA_BOOLEANA_SIMPLE,
+    OPERADORES_RELACIONALES, DECLARACION_ANIDADA, IMPORTACION,
+    SENTENCIA_BOOLEANA_ANIDADA, FOR_1, OPERACIONES_COMPLEMENTARIAS,
+    WHILE, DO_WHILE, OPERADORES_ARITMETICOS, COUT, SALIDA, CIN, ENTRADA,
+    CASE, SWITCH, CREACION_ARREGLO, DECLARACION_ARREGLO_ANIDADA,
+    DECLARACION_ARREGLO, IDENTIFICADORES, RETURN, VOID, STRUCT, CONTINUE, PRINTF, SCANF;
+
+start with INICIO;
+
+IMPORTACION ::=
+    Numeral Include MenorQue Identificador Punto Identificador MayorQue |
+    Numeral Include Comillas Identificador Punto Identificador Comillas |
+    Numeral Include MenorQue Identificador MayorQue |
+    Numeral Include MenorQue Iostream MayorQue |
+    Numeral Define Identificador Numero |
+    Numeral Define Identificador |
+    IMPORTACION Numeral Define Identificador Numero |
+    IMPORTACION Numeral Define Identificador |
+    IMPORTACION Numeral Include MenorQue Identificador Punto Identificador MayorQue |
+    IMPORTACION Numeral Include Comillas Identificador Punto Identificador Comillas |
+    IMPORTACION Numeral Include MenorQue Identificador MayorQue |
+    IMPORTACION Numeral Include MenorQue Iostream MayorQue 
+;
+INICIO ::= 
+    IMPORTACION Using Namespace Std P_coma Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
+    IMPORTACION Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
+    Int Main Parent_a Parent_c Llave_a SENTENCIA Llave_c |
+    Main Parent_a Parent_c Llave_a SENTENCIA Llave_c
+;
+SENTENCIA ::= 
+    SENTENCIA DECLARACION |
+    DECLARACION |
+    SENTENCIA IF | 
+    IF |
+    SENTENCIA FOR |
+    FOR |
+    SENTENCIA WHILE |
+    WHILE |
+    SENTENCIA DO_WHILE |
+    DO_WHILE |
+    SENTENCIA OPERACIONES_COMPLEMENTARIAS P_coma |
+    OPERACIONES_COMPLEMENTARIAS P_coma |
+    SENTENCIA COUT |
+    COUT |
+    SENTENCIA CIN |
+    CIN |
+    SENTENCIA CONTINUE |
+    CONTINUE |
+    SENTENCIA SWITCH |
+    SWITCH |
+    SENTENCIA STRUCT |
+    STRUCT |
+    SENTENCIA VOID |
+    VOID |
+    SENTENCIA RETURN |
+    RETURN |
+    SENTENCIA PRINTF |
+    PRINTF |
+    SENTENCIA SCANF |
+    SCANF
+;
+DECLARACION_ANIDADA ::=
+    Identificador Igual Numero |
+    Identificador Igual Numero Coma DECLARACION_ANIDADA |
+    Identificador Igual Comillas Comillas |
+    Identificador Igual Comillas Comillas Coma DECLARACION_ANIDADA |
+    Identificador Igual Comillas Identificador Comillas |
+    Identificador Igual Comillas Identificador Comillas Coma DECLARACION_ANIDADA |
+    Identificador Coma DECLARACION_ANIDADA |
+    Identificador Igual Identificador |
+    Identificador Igual True Coma DECLARACION_ANIDADA |
+    Identificador Igual False Coma DECLARACION_ANIDADA |
+    Identificador Igual True |
+    Identificador Igual False |
+    Identificador
+;
+CREACION_ARREGLO ::=
+    Numero Coma CREACION_ARREGLO |
+    Numero |
+    Comillas Identificador Comillas Coma CREACION_ARREGLO |
+    Comillas Identificador Comillas
+;
+DECLARACION_ARREGLO_ANIDADA ::=
+    Int DECLARACION_ARREGLO P_coma |
+    Cadena DECLARACION_ARREGLO P_coma |
+    Char DECLARACION_ARREGLO P_coma
+;
+DECLARACION_ARREGLO ::=
+    Identificador Corchete_a Corchete_c Igual Llave_a CREACION_ARREGLO Llave_c Coma DECLARACION_ARREGLO |
+    Identificador Corchete_a Corchete_c Igual Llave_a CREACION_ARREGLO Llave_c |
+    Identificador Corchete_a Numero Corchete_c Igual Llave_a CREACION_ARREGLO Llave_c Coma DECLARACION_ARREGLO |
+    Identificador Corchete_a Numero Corchete_c Igual Llave_a CREACION_ARREGLO Llave_c |
+    Identificador Corchete_a Numero Corchete_c Coma DECLARACION_ARREGLO |
+    Identificador Corchete_a Numero Corchete_c
+;
+DECLARACION ::=
+    Int DECLARACION_ANIDADA P_coma |
+    Typedef Int DECLARACION_ANIDADA P_coma |
+    Unsigned Int DECLARACION_ANIDADA P_coma |
+    Typedef Unsigned Int DECLARACION_ANIDADA P_coma |
+    Const Int DECLARACION_ANIDADA P_coma |
+    Short Int DECLARACION_ANIDADA P_coma |
+    Unsigned Short Int DECLARACION_ANIDADA P_coma |
+    Long Int DECLARACION_ANIDADA P_coma |
+    Unsigned Long Int DECLARACION_ANIDADA P_coma |
+    Double DECLARACION_ANIDADA P_coma |
+    Typedef Double DECLARACION_ANIDADA P_coma |
+    Const Double DECLARACION_ANIDADA P_coma |
+    Long Double DECLARACION_ANIDADA P_coma |
+    Float DECLARACION_ANIDADA P_coma |
+    Const Float DECLARACION_ANIDADA P_coma |
+    Char DECLARACION_ANIDADA P_coma |
+    Const Char DECLARACION_ANIDADA P_coma |
+    Unsigned Char DECLARACION_ANIDADA P_coma |
+    Cadena DECLARACION_ANIDADA P_coma |
+    Bool DECLARACION_ANIDADA P_coma |
+    DECLARACION_ARREGLO_ANIDADA P_coma 
+;
+OPERADORES_ARITMETICOS ::=
+    Suma |
+    Resta |
+    Multiplicacion |
+    Division |
+    Modulo
+;
+OPERADORES_RELACIONALES ::=
+    ConjuncionBit |
+    DisyuncionBit |
+    EsIgual |
+    MenorIgual |
+    MayorIgual |
+    Diferente |
+    MenorQue |
+    MayorQue
+;
+SENTENCIA_BOOLEANA_SIMPLE ::=
+    True |
+    False |
+    IDENTIFICADORES |
+    IDENTIFICADORES OPERADORES_ARITMETICOS IDENTIFICADORES |
+    IDENTIFICADORES OPERADORES_ARITMETICOS Numero |
+    Numero OPERADORES_ARITMETICOS IDENTIFICADORES |
+    Numero OPERADORES_ARITMETICOS Numero |
+    Numero |
+    Comillas Identificador Comillas |
+    Comillas Comillas |
+    Parent_a SENTENCIA_BOOLEANA_SIMPLE Parent_c
+;
+SENTENCIA_BOOLEANA_COMPUESTA ::=
+    Negacion SENTENCIA_BOOLEANA_SIMPLE OPERADORES_RELACIONALES SENTENCIA_BOOLEANA_SIMPLE |
+    SENTENCIA_BOOLEANA_SIMPLE OPERADORES_RELACIONALES SENTENCIA_BOOLEANA_SIMPLE |
+    SENTENCIA_BOOLEANA_SIMPLE OPERADORES_RELACIONALES Negacion SENTENCIA_BOOLEANA_SIMPLE |
+    Negacion SENTENCIA_BOOLEANA_SIMPLE OPERADORES_RELACIONALES Negacion SENTENCIA_BOOLEANA_SIMPLE |
+    Parent_a SENTENCIA_BOOLEANA_COMPUESTA Parent_c |
+    Negacion Parent_a SENTENCIA_BOOLEANA_COMPUESTA Parent_c |
+    Negacion SENTENCIA_BOOLEANA_SIMPLE
+;
+SENTENCIA_BOOLEANA_ANIDADA ::=
+    SENTENCIA_BOOLEANA_COMPUESTA |
+    SENTENCIA_BOOLEANA_SIMPLE |
+    SENTENCIA_BOOLEANA_COMPUESTA Conjuncion SENTENCIA_BOOLEANA_ANIDADA |
+    SENTENCIA_BOOLEANA_COMPUESTA Disyuncion SENTENCIA_BOOLEANA_ANIDADA |
+    SENTENCIA_BOOLEANA_SIMPLE Conjuncion SENTENCIA_BOOLEANA_ANIDADA |
+    SENTENCIA_BOOLEANA_SIMPLE Disyuncion SENTENCIA_BOOLEANA_ANIDADA
+;
+IF ::= 
+    If Parent_a SENTENCIA_BOOLEANA_ANIDADA Parent_c Llave_a SENTENCIA Llave_c |
+    If Parent_a SENTENCIA_BOOLEANA_ANIDADA Parent_c Llave_a SENTENCIA Llave_c Else Llave_a SENTENCIA Llave_c |
+    If Parent_a SENTENCIA_BOOLEANA_ANIDADA Parent_c Llave_a SENTENCIA Llave_c Else IF
+;
+FOR_1 ::=
+    Int Identificador Igual Numero |
+    IDENTIFICADORES |
+    IDENTIFICADORES Igual Numero
+;
+IDENTIFICADORES ::=
+    Identificador |
+    Identificador IDENTIFICADORES |
+    Identificador Corchete_a Numero Corchete_c |
+    Identificador Corchete_a Identificador Corchete_c
+;
+OPERACIONES_COMPLEMENTARIAS ::=
+    Incremento IDENTIFICADORES |
+    Decremento IDENTIFICADORES |
+    IDENTIFICADORES Incremento |
+    IDENTIFICADORES Decremento |
+    IDENTIFICADORES AsignacionSuma IDENTIFICADORES |
+    IDENTIFICADORES AsignacionResta IDENTIFICADORES |
+    IDENTIFICADORES AsignacionMultiplicacion IDENTIFICADORES |
+    IDENTIFICADORES AsignacionDivision IDENTIFICADORES |
+    IDENTIFICADORES AsignacionModulo IDENTIFICADORES |
+    IDENTIFICADORES Igual IDENTIFICADORES |
+    IDENTIFICADORES Igual IDENTIFICADORES OPERADORES_ARITMETICOS IDENTIFICADORES |
+    IDENTIFICADORES AsignacionSuma Numero |
+    IDENTIFICADORES AsignacionResta Numero |
+    IDENTIFICADORES AsignacionMultiplicacion Numero |
+    IDENTIFICADORES AsignacionDivision Numero |
+    IDENTIFICADORES AsignacionModulo Numero |
+    IDENTIFICADORES Igual Numero |
+    IDENTIFICADORES Igual Numero OPERADORES_ARITMETICOS IDENTIFICADORES|
+    IDENTIFICADORES Igual IDENTIFICADORES OPERADORES_ARITMETICOS Numero |
+    IDENTIFICADORES Igual Numero OPERADORES_ARITMETICOS Numero
+;
+FOR ::=
+    For Parent_a FOR_1 P_coma SENTENCIA_BOOLEANA_ANIDADA P_coma OPERACIONES_COMPLEMENTARIAS Parent_c Llave_a SENTENCIA Llave_c
+;
+WHILE ::=
+    While Parent_a SENTENCIA_BOOLEANA_ANIDADA Parent_c Llave_a SENTENCIA Llave_c
+;
+DO_WHILE ::=
+    Do Llave_a SENTENCIA Llave_c While Parent_a SENTENCIA_BOOLEANA_ANIDADA Parent_c P_coma
+;
+COUT ::=
+    Cout DesplazamientoI SALIDA P_coma
+;
+SALIDA ::=
+    IDENTIFICADORES |
+    Comillas Identificador Comillas |
+    Comillas Identificador IDENTIFICADORES Comillas |
+    Comillas Comillas |
+    Comillas Identificador Comillas DesplazamientoI SALIDA |
+    Comillas Comillas DesplazamientoI SALIDA |
+    IDENTIFICADORES DesplazamientoI SALIDA |
+    Endl
+;
+ENTRADA ::=
+    IDENTIFICADORES |
+    IDENTIFICADORES DesplazamientoD ENTRADA 
+;
+CIN ::=
+    Cin DesplazamientoD ENTRADA P_coma
+;
+CONTINUE::=
+    Continue P_coma
+;
+CASE ::=
+    Case Numero DosPuntos SENTENCIA Break P_coma |
+    Case Comillas Identificador Comillas DosPuntos SENTENCIA Break P_coma |
+    Case Comillas Comillas DosPuntos SENTENCIA Break P_coma |
+    Case IDENTIFICADORES DosPuntos SENTENCIA Break P_coma |
+    CASE Case Numero DosPuntos SENTENCIA Break P_coma |
+    CASE Case Comillas Identificador Comillas DosPuntos SENTENCIA Break P_coma |
+    CASE Case IDENTIFICADORES DosPuntos SENTENCIA Break P_coma |
+    CASE Case Comillas Comillas DosPuntos SENTENCIA Break P_coma 
+;
+SWITCH ::=
+    Switch Parent_a IDENTIFICADORES Parent_c Llave_a CASE Default DosPuntos SENTENCIA Break P_coma Llave_c |
+    Switch Parent_a IDENTIFICADORES Parent_c Llave_a CASE Default DosPuntos SENTENCIA Llave_c |
+    Switch Parent_a IDENTIFICADORES Parent_c Llave_a CASE Llave_c
+;
+RETURN ::=
+    Return Identificador P_coma|
+    Return Numero P_coma
+;
+VOID ::=
+    Void Identificador Parent_a DECLARACION_ANIDADA Parent_c P_coma |
+    Void Identificador Parent_a DECLARACION_ANIDADA Parent_c Llave_a SENTENCIA Llave_c
+;
+STRUCT ::=
+    Struct Identificador Llave_a SENTENCIA Llave_c P_coma
+;
+PRINTF ::=
+    PrintF Parent_a Comillas IDENTIFICADORES Comillas Coma Identificador Parent_c P_coma |
+    PrintF Parent_a Comillas IDENTIFICADORES Comillas Parent_c P_coma
+;
+SCANF ::=
+    ScanF Parent_a Identificador Parent_c P_coma
+;
+
